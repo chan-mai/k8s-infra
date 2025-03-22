@@ -26,15 +26,22 @@ sudo kubectl -n kube-system edit secrets/k3s-serving
 ```
 `100.99.125.62`はtailscaleのv4アドレスに置き換える。  
   
-証明書を作り直すので一旦k3sを止める
+名前解決のため、DNSを別途指定する  
+```bash
+echo "nameserver 1.1.1.1" | sudo tee /etc/k3s-resolv.conf
+echo 'kubelet-arg:' | sudo tee -a /etc/rancher/k3s/config.yaml
+echo '- "resolv-conf=/etc/k3s-resolv.conf"' | sudo tee -a /etc/rancher/k3s/config.yaml
+```
+    
+一旦k3sを止める  
 ```bash
 sudo systemctl stop k3s
 ```
-証明書作り直し
+証明書作り直し  
 ```bash
 sudo k3s certificate rotate
 ```
-k3s 開始
+k3s 開始  
 ```bash
 sudo systemctl start k3s
 ```
